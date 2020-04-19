@@ -36,6 +36,13 @@ def getName(cursor, user_id):
         username = row[0]
     return username       
 
+def getUserID(cursor, name):
+    getname = f"""SELECT user_id FROM accounts WHERE name = '{name}'"""
+
+    for row in cursor.execute(getname):
+        username = row[0]
+    return username  
+
 #Fertig
 def getCredits(cursor, user_id):
     getcredits = f"""SELECT credits FROM accounts WHERE user_id = {user_id}"""
@@ -148,6 +155,10 @@ def initdb(cursor, connection):
 def start():
     global connection
     global cursor    
+    
+    myCoolTitle = "WWM - Version 1.0"
+    system("title "+myCoolTitle)
+
     connection = sqlite3.connect("wwm.db")
     cursor = connection.cursor()
     tabelle_accounts = "CREATE TABLE IF NOT EXISTS accounts (user_id INTEGER PRIMARY KEY, name TEXT, credits INTEGER);"
@@ -267,7 +278,7 @@ def game():
                     steptwo = False
                     ingame = False
                     time.sleep(10)
-                    #exit()
+                    exit()
             elif personalantwort.lower() == "b":
                 if avaibleantwort[1] == getrightAnswer(cursor, frageid):
                     if checkwin():
@@ -287,7 +298,7 @@ def game():
                     steptwo = False
                     ingame = False
                     time.sleep(10)
-                    #exit()
+                    exit()
             elif personalantwort.lower() == "c":
                 if avaibleantwort[2] == getrightAnswer(cursor, frageid):
                     if checkwin():
@@ -307,7 +318,7 @@ def game():
                     steptwo = False
                     ingame = False
                     time.sleep(10)
-                    #exit()
+                    exit()
             elif personalantwort.lower() == "d":
                 if avaibleantwort[3] == getrightAnswer(cursor, frageid):
                     if checkwin():
@@ -327,7 +338,7 @@ def game():
                     steptwo = False
                     ingame = False
                     time.sleep(10)
-                    #exit()
+                    exit()
             else:
                 print("Upss da ist wohl ein Fehler aufgetreten")
 
@@ -349,7 +360,25 @@ while menu:
     wasmachen = input(prompt)
     if wasmachen == "1":
         os.system(clear)
-        print("Diese funktion wird erst später hinzugefügt!")
+        done = False
+        while not done:
+            print("Wie soll der Account heissen?")
+            accountname = input(prompt)
+            addAccount(cursor, accountname, connection)
+            accountid = getUserID(cursor, accountname)
+            accountname = getName(cursor, accountid)
+            print(f"""
+            Accountdaten:
+            
+            AccountID: {accountid}
+            Name: {accountname}
+    
+            *Bitte Angaben merken :)
+            """)
+            time.sleep(20)
+            wasmachen = ""
+            done = True
+            menu = True
     elif wasmachen == "2":
         os.system(clear)
         menu = False
